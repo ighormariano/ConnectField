@@ -1,0 +1,16 @@
+<% const ativo = locals.ativo || ''; %>
+<header class="topo">
+  <div class="topo-conteudo">
+    <a href="/admin/dashboard" class="topo-logo">
+      <img src="/img/logo.png" alt="ConnectField">
+    </a>
+
+    <nav class="topo-menu" aria-label="Menu principal">
+      <a href="/cadastro" class="<%= ativo === 'cadastro' ? 'ativo' : '' %>">Cadastro</a>
+      <a href="/admin/produtos" class="<%= ativo === 'produtos' ? 'ativo' : '' %>">Produtos</a>
+      <a href="/admin/categorias" class="<%= ativo === 'categorias' ? 'ativo' : '' %>">Categorias</a>
+      <a href="/admin/dashboard" class="<%= ativo === 'dashboard' ? 'ativo' : '' %>">Dashboard</a>
+      <a href="/logout" class="<%= ativo === 'logout' ? 'ativo' : '' %>">Logout</a>
+    </nav>
+  </div>
+</header>

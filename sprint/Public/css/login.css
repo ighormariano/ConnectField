@@ -1,0 +1,362 @@
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600&display=swap');
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --fonte-titulo: 'Bricolage Grotesque', 'Segoe UI', sans-serif;
+  --fonte-texto: 'Figtree', 'Segoe UI', Arial, sans-serif;
+
+  --mata-900: #12301B;
+  --mata-700: #1E4D2B;
+  --folha: #3E7B4A;
+  --sage: #E3E9DD;
+  --sage-forte: #CBD6C3;
+  --palha: #D9A93B;
+  --papel: #FCFCFA;
+  --linha: #D8DED2;
+  --tinta: #1D261F;
+  --tinta-suave: #5B675A;
+  --erro: #B3412F;
+  --erro-claro: #F7E3DD;
+
+  /* nomes antigos */
+  --verde-900: var(--mata-900);
+  --verde-800: var(--mata-700);
+  --verde-600: #2A6238;
+  --verde-500: var(--folha);
+  --lima: var(--palha);
+  --ciano: var(--palha);
+  --texto: var(--tinta);
+  --texto-suave: var(--tinta-suave);
+  --borda: var(--linha);
+}
+
+body {
+  font-family: var(--fonte-texto);
+  color: var(--tinta);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--palha);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* ---------- Fundo ---------- */
+/* As linhas diagonais lembram fileiras de plantio. */
+.login-page {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  padding: 40px 8%;
+  overflow: hidden;
+  background-color: var(--mata-900);
+  background:
+    repeating-linear-gradient(104deg, transparent 0 54px, rgba(255, 255, 255, 0.05) 54px 56px),
+    linear-gradient(rgba(18, 48, 27, 0.9), rgba(18, 48, 27, 0.9)),
+    url('/img/fundo.png') center / cover no-repeat;
+}
+
+/* ---------- Logo ---------- */
+.login-logo {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.login-logo img {
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+}
+
+/* ---------- Card ---------- */
+.login-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 440px;
+  padding: 44px 36px 36px;
+  background: var(--papel);
+  border-radius: 12px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
+  animation: entrar 0.6s ease both;
+}
+
+.login-card.compacto {
+  padding: 38px 36px 30px;
+}
+
+.login-card h1 {
+  font-family: var(--fonte-titulo);
+  text-align: left;
+  font-size: 1.7rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--mata-900);
+}
+
+.subtitulo {
+  text-align: left;
+  font-size: 0.9rem;
+  color: var(--tinta-suave);
+  margin: 8px 0 34px;
+}
+
+.login-card.compacto .subtitulo {
+  margin-bottom: 24px;
+}
+
+/* ---------- Campos ---------- */
+.campo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 50px;
+  padding: 0 14px;
+  margin-bottom: 18px;
+  background: #fff;
+  border: 1px solid var(--linha);
+  border-radius: 8px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.login-card.compacto .campo {
+  height: 46px;
+  margin-bottom: 14px;
+}
+
+.campo svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: var(--tinta-suave);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.2s;
+}
+
+.campo input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--tinta);
+}
+
+.campo input::placeholder {
+  color: #8a968c;
+}
+
+.campo:focus-within {
+  border-color: var(--folha);
+  box-shadow: 0 0 0 3px rgba(62, 123, 74, 0.2);
+}
+
+.campo:focus-within > svg {
+  stroke: var(--folha);
+}
+
+/* Borda vermelha só depois de o usuário mexer no campo */
+.campo:has(input:user-invalid) {
+  border-color: var(--erro);
+  box-shadow: 0 0 0 3px rgba(179, 65, 47, 0.15);
+}
+
+/* Botão de mostrar senha */
+.ver-senha {
+  display: grid;
+  place-items: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+}
+
+.ver-senha:hover svg {
+  stroke: var(--mata-700);
+}
+
+/* ---------- Lembrar / Esqueci ---------- */
+.linha-opcoes {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 4px 0 26px;
+  font-size: 0.85rem;
+}
+
+.login-card.compacto .linha-opcoes {
+  margin: 6px 0 22px;
+}
+
+.lembrar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+  color: var(--tinta-suave);
+}
+
+.lembrar input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.lembrar .caixa {
+  width: 18px;
+  height: 18px;
+  display: grid;
+  place-items: center;
+  background: #fff;
+  border: 1.5px solid #b7c4ba;
+  border-radius: 4px;
+  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+.lembrar .caixa::after {
+  content: '';
+  width: 4px;
+  height: 9px;
+  margin-top: -2px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) scale(0);
+  transition: transform 0.15s ease;
+}
+
+.lembrar input:checked + .caixa {
+  background: var(--mata-700);
+  border-color: var(--mata-700);
+}
+
+.lembrar input:checked + .caixa::after {
+  transform: rotate(45deg) scale(1);
+}
+
+.lembrar input:focus-visible + .caixa {
+  box-shadow: 0 0 0 3px rgba(62, 123, 74, 0.3);
+}
+
+.lembrar input:checked ~ .texto {
+  color: var(--tinta);
+}
+
+.esqueci {
+  color: var(--mata-700);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.esqueci:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Botão ---------- */
+.btn-acessar {
+  width: 100%;
+  height: 50px;
+  border: none;
+  border-radius: 8px;
+  background: var(--mata-700);
+  color: #fff;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-acessar:hover {
+  background: var(--mata-900);
+}
+
+/* ---------- Alertas ---------- */
+.alerta {
+  padding: 12px 14px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.alerta.erro {
+  background: var(--erro-claro);
+  color: var(--erro);
+  border: 1px solid #E8C3BA;
+}
+
+.alerta.sucesso {
+  background: var(--sage);
+  color: var(--mata-700);
+  border: 1px solid var(--sage-forte);
+}
+
+/* ---------- Links de baixo do card ---------- */
+.rodape-card {
+  text-align: center;
+  margin-top: 24px;
+  font-size: 0.9rem;
+  color: var(--tinta-suave);
+}
+
+.rodape-card a {
+  color: var(--mata-700);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.rodape-card a:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Animação ---------- */
+/* Só o card entra animado. */
+@keyframes entrar {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+
+/* ---------- Responsivo ---------- */
+@media (max-width: 860px) {
+  .login-page {
+    flex-direction: column;
+    justify-content: center;
+    padding: 28px 16px;
+    gap: 20px;
+  }
+
+  .login-logo img {
+    max-width: 200px;
+  }
+
+  .login-card,
+  .login-card.compacto {
+    padding: 34px 22px 28px;
+  }
+}

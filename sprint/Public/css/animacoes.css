@@ -1,0 +1,92 @@
+/* =========================================================
+   animacoes.css  (carregado via @import em rodape.css)
+   Só usa opacity, transform e scale. Não altera layout.
+   Seletores com :where() têm especificidade mínima, então
+   as animações que já existem em admin.css / style.css vencem.
+   ========================================================= */
+
+:root {
+  --anim-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* ---------- 1. Entrada da página (só CSS, roda a cada carregamento do EJS) ---------- */
+/* Anima o conteúdo dentro de <main>. Cabeçalhos (.cabecalho, .topo), menus e rodapé
+   ficam parados. Login (.login-page) e hero (.conect) já têm animação própria. */
+@keyframes entrada-pagina {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+
+:where(main:not(.login-page)) > :where(:not(header, nav, aside, .cabecalho, .menu, .topo, .conect, .rodape, .sobre, .reveal-pre)) {
+  animation: entrada-pagina 0.45s var(--anim-ease) backwards;
+}
+
+/* Página "Sobre" não tem <main>: anima o container da seção */
+:where(.sobre) > .container {
+  animation: entrada-pagina 0.45s var(--anim-ease) backwards;
+}
+
+/* Opt-in: class="pagina-entrada" em qualquer contêiner de conteúdo */
+:where(.pagina-entrada) {
+  animation: entrada-pagina 0.45s var(--anim-ease) backwards;
+}
+
+/* ---------- 2. Clique em botões ---------- */
+/* Usa a propriedade `scale` (independe de `transform`) dentro de uma animation,
+   então NÃO mexe nas transições de cor/sombra já definidas nos botões.
+   O contorno de foco (:focus-visible) não é alterado. */
+@keyframes clique-botao {
+  from { scale: 1; }
+  to   { scale: 0.96; }
+}
+
+:where(.btn, .btn-mov, .btn-acessar, .cat-btn, .botao-admin, .botao-buscar,
+       .botao-editar, .icone, .cat-icone, .esqueci, .rodape-card a, button):active:where(:not(:disabled, [disabled], [aria-disabled="true"], .disabled)) {
+  animation: clique-botao 0.12s var(--anim-ease) forwards;
+}
+
+/* Link "← Voltar..." é inline; precisa ser inline-block para aceitar scale
+   (visualmente igual, pois está sozinho na linha) */
+.rodape-card a {
+  display: inline-block;
+}
+
+/* ---------- 3. Rolagem: aparecer ao entrar na tela ---------- */
+/* As classes só existem se o JS as adicionar a elementos abaixo da primeira tela.
+   Sem JS ou sem IntersectionObserver, tudo continua visível. */
+.reveal-pre {
+  opacity: 0;
+  transform: translateY(22px);
+}
+
+.reveal-pre,
+.reveal-in {
+  transition: opacity 0.55s ease, transform 0.55s var(--anim-ease);
+  transition-delay: var(--atraso, 0s);
+}
+
+.reveal-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Cascata leve em Missão / Visão / Valores */
+.card-institucional:nth-child(2) { --atraso: 0.08s; }
+.card-institucional:nth-child(3) { --atraso: 0.16s; }
+
+/* ---------- Movimento reduzido ---------- */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+  }
+
+  .reveal-pre {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .reveal-pre,
+  .reveal-in {
+    transition: none !important;
+  }
+}

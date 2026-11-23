@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ConectField - Produtos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <!-- no <head>, depois do style.css -->
+<link rel="stylesheet" href="/css/rodape.css">
+<link rel="stylesheet" href="/css/animacoes.css">
+</head>
+
+<body class="pagina-produtos">
+
+  <!-- CABEÇALHO -->
+  <header class="cabecalho">
+    <div class="container cabecalho-conteudo">
+      <a href="/" class="logo">
+        <img src="/img/logo.png" alt="ConectField">
+      </a>
+      <nav class="menu">
+        <a href="/">Início</a>
+        <a href="/sobre">Sobre</a>
+        <a href="/produtos">Produtos</a>
+        <a href="/login" class="botao-admin">Área do Administrador</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="produtos container">
+    <h1>Produtos</h1>
+
+    <!-- FORMULÁRIO DE FILTROS (Recarrega automaticamente ao mudar o select) -->
+    <form method="GET" action="/produtos" class="filtros">
+      <div class="busca-wrapper">
+        <input type="text" name="q" class="filtro-busca" placeholder="Buscar produtos..." value="<%= filtros.q %>">
+        <button type="submit" class="botao-buscar">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.3-4.3" />
+          </svg>
+        </button>
+      </div>
+
+      <select name="categoria" class="filtro-select" onchange="this.form.submit()">
+        <option value="">Todas as categorias</option>
+        <% categorias.forEach(c=> { %>
+          <option value="<%= c.id %>" <%=filtros.categoria==c.id ? 'selected' : '' %>><%= c.nome %>
+          </option>
+          <% }) %>
+      </select>
+
+      <select name="status" class="filtro-select" onchange="this.form.submit()">
+        <option value="">Todos os status</option>
+        <option value="ativo" <%=filtros.status==='ativo' ? 'selected' : '' %>>Ativo</option>
+        <option value="baixo" <%=filtros.status==='baixo' ? 'selected' : '' %>>Baixo estoque</option>
+      </select>
+    </form>
+
+    <!-- TABELA PREENCHIDA COM OS DADOS DO POSTGRESQL -->
+    <div class="tabela-wrapper">
+      <table class="tabela-produtos">
+        <thead>
+          <tr>
+            <th>Imagem</th>
+            <th>Nome</th>
+            <th>Categoria</th>
+            <th class="centro">Estoque</th>
+            <th class="centro">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (produtos.length===0) { %>
+            <tr>
+              <td colspan="6" class="centro" style="padding: 20px;">Nenhum produto encontrado.</td>
+            </tr>
+            <% } else { %>
+              <% produtos.forEach(p=> { %>
+                <tr>
+                  <td>
+                    <img src="<%= p.imagem || '/img/placeholder.png' %>" class="produto-img" alt="<%= p.nome %>">
+                  </td>
+                  <td>
+                    <%= p.nome %>
+                  </td>
+                  <td>
+                    <%= p.categoria_nome || 'Sem Categoria' %>
+                  </td>
+                  <td class="centro">
+                    <%= p.qnt_estoque %>
+                  </td>
+                  <td class="centro">
+                    <!-- Lógica: Se estoque <= estoque_min -> Amarelo (Baixo estoque), senão -> Verde (Ativo) -->
+                    <span class="status <%= p.qnt_estoque <= p.estoque_min ? 'status-baixo' : 'status-ativo' %>">
+                      <%= p.qnt_estoque <=p.estoque_min ? 'Baixo estoque' : 'Ativo' %>
+                    </span>
+
+                  </td>
+                </tr>
+                <% }) %>
+                  <% } %>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+
+<!-- logo depois do </main> (ou do </section> no sobre.ejs) -->
+<%- include('partials/rodape') %>
+</body>
+
+</html>

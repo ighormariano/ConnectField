@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | ConnectField</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/admin.css">
+  <!-- no <head>, depois do admin.css -->
+<link rel="stylesheet" href="/css/rodape.css">
+<link rel="stylesheet" href="/css/animacoes.css">
+<script src="/js/proteger-admin.js" defer></script>
+</head>
+
+<body class="pagina-produtos pagina-admin">
+  <% const lista = locals.dashboard || []; %>
+  <% const f = locals.filtros || {}; %>
+
+  <%- include('partials/topo', { ativo: 'dashboard' }) %>
+
+  <main class="dash container">
+
+    <div class="dash-topo">
+      <div>
+        <h1>Dashboard</h1>
+        <p>Resumo do estoque da loja</p>
+      </div>
+      <button type="button" class="btn-mov" id="abrirModal">+ Registrar movimentação</button>
+    </div>
+
+    <!-- INDICADORES -->
+    <section class="indicadores">
+      <article class="indicador">
+        <span class="indicador-rotulo">Valor total em estoque</span>
+        <strong class="indicador-valor" data-contar="<%= resumo.valor_total %>" data-moeda>
+          <%= Number(resumo.valor_total).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) %>
+        </strong>
+      </article>
+
+      <article class="indicador">
+        <span class="indicador-rotulo">Produtos cadastrados</span>
+        <strong class="indicador-valor" data-contar="<%= resumo.total_produtos %>"><%= resumo.total_produtos %></strong>
+      </article>
+
+      <article class="indicador">
+        <span class="indicador-rotulo">Categorias ativas</span>
+        <strong class="indicador-valor" data-contar="<%= resumo.categorias %>"><%= resumo.categorias %></strong>
+      </article>
+
+      <!-- clicar leva para a lista de estoque mínimo -->
+      <a href="#estoque-minimo" class="indicador alerta-min">
+        <span class="indicador-rotulo">Abaixo do mínimo</span>
+        <strong class="indicador-valor" data-contar="<%= resumo.abaixo %>"><%= resumo.abaixo %></strong>
+      </a>
+    </section>
+
+    <section class="dash-grade">
+
+      <!-- PRODUTOS POR CATEGORIA -->
+      <article class="painel">
+        <h2>Produtos por categoria</h2>
+        <% const maximo = Math.max(1, ...categorias.map(c => Number(c.total))); %>
+        <ul class="barras">
+          <% categorias.forEach((c, i) => { %>
+            <li style="--w: <%= (Number(c.total) / maximo * 100).toFixed(0) %>%; --i: <%= i %>">
+              <span class="barra-nome"><%= c.nome %></span>
+              <span class="barra-trilho"><span class="barra-fill"></span></span>
+              <span class="barra-total"><%= c.total %></span>
+            </li>
+          <% }) %>
+          <% if (categorias.length === 0) { %><li class="vazio">Nenhuma categoria cadastrada.</li><% } %>
+        </ul>
+      </article>
+
+      <!-- ESTOQUE MÍNIMO -->
+      <article class="painel" id="estoque-minimo">
+        <h2>Estoque mínimo atingido</h2>
+        <ul class="lista-min">
+          <% baixos.forEach(p => { %>
+            <li>
+              <span><%= p.nome %></span>
+              <button type="button" class="chip-un" data-repor="<%= p.id %>"
+                title="Registrar entrada de <%= p.nome %>"><%= p.qnt_estoque %> un</button>
+            </li>
+          <% }) %>
+          <% if (baixos.length === 0) { %><li class="vazio">Tudo certo! Nenhum produto abaixo do mínimo.</li><% } %>
+        </ul>
+      </article>
+    </section>
+
+    <!-- MOVIMENTAÇÕES RECENTES -->
+    <section class="painel">
+      <div class="painel-topo">
+        <h2>Movimentações recentes</h2>
+        <div class="filtro-tipo" role="group" aria-label="Filtrar movimentações">
+          <button type="button" class="ativo" data-filtro="todas">Todas</button>
+          <button type="button" data-filtro="entrada">Entradas</button>
+          <button type="button" data-filtro="saida">Saídas</button>
+        </div>
+      </div>
+
+      <div class="tabela-wrapper">
+        <table class="tabela-mov">
+          <thead>
+            <tr><th>Produto</th><th>Tipo</th><th>Qnt</th><th>Responsável</th><th>Data</th></tr>
+          </thead>
+          <tbody id="corpoMov">
+            <% movimentos.forEach(m => { %>
+              <tr data-tipo="<%= m.tipo %>">
+                <td><%= m.nome %></td>
+                <td><span class="tipo tipo-<%= m.tipo %>"><%= m.tipo === 'entrada' ? '↑ Entrada' : '↓ Saída' %></span></td>
+                <td><%= m.quantidade %></td>
+                <td><%= m.usuario_nome || 'Sistema' %></td>
+                <td><%= new Date(m.data).toLocaleDateString('pt-BR') %></td>
+              </tr>
+            <% }) %>
+            <tr class="vazio-linha" hidden><td colspan="5">Nenhuma movimentação neste filtro.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- MODAL: NOVA MOVIMENTAÇÃO -->
+  <div class="modal" id="modal" hidden>
+    <div class="modal-caixa" role="dialog" aria-modal="true" aria-labelledby="modalTitulo">
+      <button type="button" class="modal-fechar" id="fecharModal" aria-label="Fechar">×</button>
+      <h2 id="modalTitulo">Registrar movimentação</h2>
+
+      <form id="formMov" novalidate>
+        <div class="seletor-tipo" role="radiogroup" aria-label="Tipo">
+          <label>
+            <input type="radio" name="tipo" value="entrada" checked>
+            <span>↑ Entrada</span>
+          </label>
+          <label>
+            <input type="radio" name="tipo" value="saida">
+            <span>↓ Saída</span>
+          </label>
+        </div>
+
+        <label class="rotulo" for="produto">Produto</label>
+        <select id="produto" name="produto_id" required>
+          <option value="">Selecione um produto</option>
+          <% produtos.forEach(p => { %>
+            <option value="<%= p.id %>" data-estoque="<%= p.qnt_estoque %>"><%= p.nome %></option>
+          <% }) %>
+        </select>
+        <small class="dica" id="dicaEstoque">Escolha um produto para ver o estoque atual.</small>
+
+        <label class="rotulo" for="quantidade">Quantidade</label>
+        <div class="stepper">
+          <button type="button" data-passo="-1" aria-label="Diminuir">−</button>
+          <input type="number" id="quantidade" name="quantidade" min="1" value="1" required>
+          <button type="button" data-passo="1" aria-label="Aumentar">+</button>
+        </div>
+
+        <p class="erro-form" id="erroForm" hidden></p>
+        <button type="submit" class="btn-mov largo" id="btnSalvar">Salvar entrada</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="/js/admin.js"></script>
+  
+
+<!-- logo depois do </main> -->
+<%- include('../partials/rodape', { tipo: 'admin' }) %>
+</body>
+
+</html>

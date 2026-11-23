@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recuperar senha | ConnectField</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/login.css">
+  <!-- no <head>, depois do login.css -->
+<link rel="stylesheet" href="/css/rodape.css">
+<link rel="stylesheet" href="/css/animacoes.css">
+</head>
+<body>
+  <main class="login-page">
+
+    <section class="login-logo">
+      <img src="/img/logo.png" alt="ConnectField">
+    </section>
+
+    <section class="login-card">
+      <h1>Esqueceu a senha?</h1>
+      <p class="subtitulo">Informe seu e-mail e enviaremos um link para você criar uma nova senha.</p>
+
+      <% if (locals.erro) { %>
+        <div class="alerta erro"><%= erro %></div>
+      <% } %>
+
+      <% if (locals.sucesso) { %>
+        <div class="alerta sucesso"><%= sucesso %></div>
+      <% } %>
+
+      <form action="/esqueci-senha" method="POST">
+        <label class="campo">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3" y="5" width="18" height="14" rx="2"/>
+            <path d="M3 7l9 6 9-6"/>
+          </svg>
+          <input type="email" name="email" placeholder="Digite seu e-mail" required>
+        </label>
+
+        <button type="submit" class="btn-acessar">Enviar link</button>
+      </form>
+
+      <p class="rodape-card"><a href="/login">← Voltar para o login</a></p>
+    </section>
+
+  </main>
+  <script src="/js/auth.js"></script>
+  
+
+<!-- logo depois do </main>, antes do <script> -->
+<%- include('partials/rodape', { tipo: 'login' }) %>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= (locals.produto && locals.produto.id) ? 'Editar Produto' : 'Cadastrar Produto' %> | ConnectField</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/admin.css">
+  <link rel="stylesheet" href="/css/rodape.css">
+  <link rel="stylesheet" href="/css/animacoes.css">
+  <script src="/js/proteger-admin.js" defer></script>
+</head>
+<body>
+  <% const p = locals.produto || {}; %>
+  <% const editando = !!p.id; %>
+  <% const cats = locals.categorias || []; %>
+
+  <%- include('partials/topo', { ativo: 'produtos' }) %>
+
+  <main class="pagina pagina-estreita">
+
+    <div class="pagina-cab">
+      <div>
+        <h1><%= editando ? 'Editar Produto' : 'Cadastrar Produto' %></h1>
+        <p class="pagina-sub">Preencha os dados do produto e salve.</p>
+      </div>
+      <button type="submit" form="form-produto" class="btn btn-primario">
+        <%= editando ? 'Salvar' : 'Cadastrar' %>
+      </button>
+    </div>
+
+    <% if (locals.erro) { %><div class="alerta erro"><%= erro %></div><% } %>
+
+    <form id="form-produto"
+          class="form-card produto"
+          action="<%= editando ? '/admin/produtos/' + p.id : '/admin/produtos' %>"
+          method="POST"
+          enctype="multipart/form-data">
+
+      <!-- UPLOAD -->
+      <label class="upload" for="imagem">
+        <img id="previa" class="upload-previa" alt="Prévia da imagem"
+             src="<%= p.imagem || '' %>" <%= p.imagem ? '' : 'hidden' %>>
+        <span class="upload-texto">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
+          <strong>Upload de imagem</strong>
+          <small>Clique para escolher (PNG, JPG ou WEBP)</small>
+        </span>
+        <input type="file" id="imagem" name="imagem" accept="image/*">
+      </label>
+
+      <!-- CAMPOS -->
+      <div class="campos">
+
+        <div class="campo-form">
+          <label for="nome">Nome do produto</label>
+          <input type="text" id="nome" name="nome" placeholder="Digite o nome do produto"
+                 value="<%= p.nome || '' %>" maxlength="100" required>
+        </div>
+
+        <div class="duas-colunas">
+          <div class="campo-form">
+            <label for="categoria_id">Categoria</label>
+            <select id="categoria_id" name="categoria_id" required>
+              <option value="">Selecione uma categoria</option>
+              <% cats.forEach(c => { %>
+                <option value="<%= c.id %>" <%= String(p.categoria_id) === String(c.id) ? 'selected' : '' %>><%= c.nome %></option>
+              <% }) %>
+            </select>
+          </div>
+
+          <div class="campo-form">
+            <label for="custo">Custo unitário (R$)</label>
+            <input type="number" id="custo" name="custo" min="0" step="0.01" placeholder="0.00"
+                   value="<%= p.custo ?? '0.00' %>" required>
+          </div>
+        </div>
+
+        <div class="duas-colunas">
+          <div class="campo-form">
+            <label for="qnt_estoque">Quantidade em estoque</label>
+            <input type="number" id="qnt_estoque" name="qnt_estoque" min="0" placeholder="0"
+                   value="<%= p.qnt_estoque ?? '' %>" required>
+          </div>
+
+          <div class="campo-form">
+            <label for="estoque_min">Estoque mínimo</label>
+            <input type="number" id="estoque_min" name="estoque_min" min="0" placeholder="0"
+                   value="<%= p.estoque_min ?? '' %>" required>
+          </div>
+        </div>
+
+        <div class="campo-form">
+          <label for="descricao">Descrição (opcional)</label>
+          <input type="text" id="descricao" name="descricao" placeholder="Breve descrição do produto"
+                 value="<%= p.descricao || '' %>">
+        </div>
+
+        <div class="status-linha">
+          <span>Status automático:</span>
+          <span id="status-previa" class="status status-neutro">Informe o estoque</span>
+        </div>
+        <p class="dica">O produto fica com <strong>Baixo estoque</strong> quando a quantidade for menor ou igual ao estoque mínimo.</p>
+
+        <div class="form-botoes">
+          <a href="/admin/produtos" class="btn btn-claro">Cancelar</a>
+          <button type="submit" class="btn btn-verde"><%= editando ? 'Salvar alterações' : 'Cadastrar produto' %></button>
+        </div>
+      </div>
+
+    </form>
+  </main>
+
+  <script>
+    // Prévia da imagem escolhida
+    const entrada = document.getElementById('imagem');
+    const previa = document.getElementById('previa');
+    entrada.addEventListener('change', () => {
+      const arquivo = entrada.files[0];
+      if (!arquivo) return;
+      previa.src = URL.createObjectURL(arquivo);
+      previa.hidden = false;
+    });
+
+    // Status calculado enquanto digita
+    const qtd = document.getElementById('qnt_estoque');
+    const min = document.getElementById('estoque_min');
+    const pilula = document.getElementById('status-previa');
+
+    function atualizarStatus() {
+      if (qtd.value === '' || min.value === '') {
+        pilula.textContent = 'Informe o estoque';
+        pilula.className = 'status status-neutro';
+        return;
+      }
+      const baixo = Number(qtd.value) <= Number(min.value);
+      pilula.textContent = baixo ? 'Baixo estoque' : 'Ativo';
+      pilula.className = 'status ' + (baixo ? 'status-baixo' : 'status-ativo');
+    }
+
+    qtd.addEventListener('input', atualizarStatus);
+    min.addEventListener('input', atualizarStatus);
+    atualizarStatus();
+  </script>
+
+<%- include('../partials/rodape', { tipo: 'admin' }) %>
+</body>
+</html>

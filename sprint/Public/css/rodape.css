@@ -1,0 +1,39 @@
+@import url('/css/animacoes.css');
+
+:root {
+  --altura-rodape: 35px;
+}
+
+/* 1. Remove margens padrão e define o layout em coluna */
+html, body {
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 2. Faz o elemento principal ocupar todo o espaço restante */
+main, .conect, .login-page {
+  flex: 1;
+}
+
+/* 3. Estilização do Rodapé
+   (o original usava opacity: .2 no elemento todo, o que apagava o texto) */
+.rodape {
+  width: 100%;
+  height: var(--altura-rodape);
+  background-color: #F0F2EC;
+  color: #5B675A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Figtree', 'Segoe UI', Arial, sans-serif;
+  font-size: 0.8rem;
+  border-top: 1px solid #D8DED2;
+  z-index: 10;
+}
+
+.rodape p {
+  margin: 0;
+}

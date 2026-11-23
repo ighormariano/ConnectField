@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Criar conta | ConnectField</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/login.css">
+  <!-- no <head>, depois do login.css -->
+<link rel="stylesheet" href="/css/rodape.css">
+<link rel="stylesheet" href="/css/animacoes.css">
+<script src="/js/proteger-admin.js" defer></script>
+</head>
+<body>
+  <main class="login-page">
+
+    <section class="login-logo">
+      <img src="/img/logo.png" alt="ConnectField">
+    </section>
+
+    <section class="login-card compacto">
+      <h1>Crie sua conta</h1>
+      <p class="subtitulo">Preencha os dados para começar.</p>
+
+      <% if (locals.erro) { %>
+        <div class="alerta erro"><%= erro %></div>
+      <% } %>
+
+      <form action="/cadastro" method="POST" data-confirma>
+
+        <label class="campo">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="8" r="4"/>
+            <path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/>
+          </svg>
+          <input type="text" name="nome" placeholder="Nome completo" required>
+        </label>
+
+        <label class="campo">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3" y="5" width="18" height="14" rx="2"/>
+            <path d="M3 7l9 6 9-6"/>
+          </svg>
+          <input type="email" name="email" placeholder="E-mail" required>
+        </label>
+
+        <label class="campo">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="8" cy="15" r="4"/>
+            <path d="M11 12l9-9M16 7l3 3"/>
+          </svg>
+          <input type="password" name="senha" placeholder="Crie uma senha" minlength="6" required>
+          <button type="button" class="ver-senha" aria-label="Mostrar senha">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
+        </label>
+
+        <label class="campo">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="8" cy="15" r="4"/>
+            <path d="M11 12l9-9M16 7l3 3"/>
+          </svg>
+          <input type="password" name="confirmar" placeholder="Confirme a senha" required>
+          <button type="button" class="ver-senha" aria-label="Mostrar senha">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
+        </label>
+
+        <div class="linha-opcoes">
+          <label class="lembrar">
+            <input type="checkbox" name="termos" required>
+            <span class="caixa"></span>
+            <span class="texto">Li e aceito os termos de uso</span>
+          </label>
+        </div>
+
+        <button type="submit" class="btn-acessar">Criar conta</button>
+      </form>
+
+      <p class="rodape-card">Deseja voltar ao Dashboard? <a href="/admin/dashboard">Ir ao Dashboard</a></p>
+    </section>
+
+  </main>
+  <script src="/js/auth.js"></script>
+  
+
+<!-- logo depois do </main>, antes do <script> -->
+<%- include('partials/rodape', { tipo: 'login' }) %>
+</body>
+</html>

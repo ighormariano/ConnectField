@@ -1,0 +1,105 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #0B8E53;
+    color: #ffffff;
+    line-height: 1.6;
+}
+
+/* Corrigido o 'ç' para corresponder à classe do HTML */
+.cabecalho {
+    background-color: transparent;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 10;
+    padding: 20px 0;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.cabecalho-conteudo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo img {
+    width: 120px;
+    height: auto;
+    display: block;
+}
+
+.menu {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.menu a {
+    color: #ffffff;
+    text-decoration: none;
+    opacity: 0.9;
+    font-weight: 500;
+}
+
+.menu a:hover {
+    opacity: 1;
+}
+
+.menu .botao-admin {
+    background-color: #097E3C99; /* Hexadecimal com 60% de transparência */
+    color: #ffffff;
+    padding: 9px 16px;
+    border-radius: 20px;
+    opacity: 0.9;
+    border: 1px solid #ffffff33; /* Hexadecimal com 20% de transparência */
+}
+
+.menu .botao-admin:hover {
+    opacity: 1;
+    background-color: #097E3C;
+}
+
+/* SEÇÃO HERO COM IMAGEM DE FUNDO */
+.conect {
+    position: relative;
+    color: #ffffff;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    /* Gradiente e transparências em Hexadecimal (8 dígitos: #RRGGBBAA) */
+    background: linear-gradient(180deg, #0B8E53D9 0%, #0B8E53A6 100%), 
+                url('../img/fundo.png') no-repeat center center/cover;
+}
+
+.conect-conteudo {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding-top: 80px;
+}
+
+.conect-texto {
+    max-width: 700px;
+}
+
+.conect-texto h1 {
+    font-size: 50px;
+    line-height: 1.25;
+}

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastrar Categoria | ConnectField</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/admin.css">
+  <!-- no <head>, depois do admin.css -->
+<link rel="stylesheet" href="/css/rodape.css">
+<link rel="stylesheet" href="/css/animacoes.css">
+<script src="/js/proteger-admin.js" defer></script>
+</head>
+<body>
+  <% const c = locals.categoria || {}; %>
+  <% const editando = !!c.id; %>
+
+  <%- include('partials/topo', { ativo: 'categorias' }) %>
+
+  <main class="pagina pagina-estreita">
+
+    <div class="pagina-cab">
+      <div>
+        <h1><%= editando ? 'Editar Categoria' : 'Cadastrar Categoria' %></h1>
+        <p class="pagina-sub">Organize seus produtos em grupos.</p>
+      </div>
+      <button type="submit" form="form-categoria" class="btn btn-primario">
+        <%= editando ? 'Salvar' : 'Cadastrar' %>
+      </button>
+    </div>
+
+    <% if (locals.erro) { %><div class="alerta erro"><%= erro %></div><% } %>
+
+    <form id="form-categoria"
+          class="form-card simples"
+          action="<%= editando ? '/admin/categorias/' + c.id : '/admin/categorias' %>"
+          method="POST">
+
+      <div class="campos">
+
+        <div class="campo-form">
+          <label for="nome">Nome da categoria</label>
+          <input type="text" id="nome" name="nome" placeholder="Digite o nome da categoria"
+                 value="<%= c.nome || '' %>" maxlength="60" required>
+        </div>
+
+        <div class="campo-form">
+          <label for="descricao">Descrição</label>
+          <textarea id="descricao" name="descricao" rows="4" maxlength="200"
+                    placeholder="Digite a descrição da categoria"><%= c.descricao || '' %></textarea>
+          <small class="dica">Até 200 caracteres.</small>
+        </div>
+
+        <div class="form-botoes">
+          <a href="/admin/categorias" class="btn btn-claro">Cancelar</a>
+          <button type="submit" class="btn btn-verde"><%= editando ? 'Salvar alterações' : 'Cadastrar categoria' %></button>
+        </div>
+      </div>
+
+    </form>
+  </main>
+  
+
+<!-- logo depois do </main> -->
+<%- include('../partials/rodape', { tipo: 'admin' }) %>
+</body>
+</html>
